@@ -26,7 +26,7 @@ public class FlappyBird extends ApplicationAdapter {
 		batch.draw(img, 0, 0);
 		batch.end();
 	}
-	CalendarData_gd_GB
+
 	@Override
 	public void dispose () {
 		batch.dispose();
