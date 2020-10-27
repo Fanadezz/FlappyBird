@@ -10,7 +10,8 @@ public class FlappyBird extends ApplicationAdapter {
 
 	//textures in games creations are just image resources
 	Texture background;
-	Texture bird;
+	Texture []birds;
+	int flapState ;
 
 
 	//called when the app is run
@@ -20,7 +21,8 @@ public class FlappyBird extends ApplicationAdapter {
 		//sprite is a collection of textures
 		batch = new SpriteBatch();
 		background = new Texture("bg.png");
-		bird = new Texture("bird.png");
+		flapState = 0;
+		birds = new Texture[] {new Texture("bird.png"), new Texture("bird2.png")};
 
 	}
 
@@ -42,13 +44,36 @@ public class FlappyBird extends ApplicationAdapter {
 		* Length - we get the length from Gdx.graphics Library*/
 
 
+
+
 		//draw background
 		batch.draw(background, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
 		//draw bird at the center of the screen
-		batch.draw(bird, (Gdx.graphics.getWidth()/2f -  bird.getWidth()/2f),
-				   (Gdx.graphics.getHeight()/2f - bird.getHeight()/2f));
+
+		if (flapState ==0) {
+
+			flapState = 1;
+
+		} else {
+
+			flapState = 0;
+
+
+
+		}
+
+
+		try {
+
+			batch.draw(birds[flapState], (Gdx.graphics.getWidth() / 2f - birds[flapState].getWidth() / 2f),
+					   (Gdx.graphics.getHeight() / 2f - birds[flapState].getHeight() / 2f));
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 
 		batch.end();
 
