@@ -44,13 +44,11 @@ public class FlappyBird extends ApplicationAdapter {
 		* Length - we get the length from Gdx.graphics Library*/
 
 
-
-
 		//draw background
 		batch.draw(background, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
-		//draw bird at the center of the screen
+		//flapState to switch between birds in birds array
 
 		if (flapState ==0) {
 
@@ -66,7 +64,7 @@ public class FlappyBird extends ApplicationAdapter {
 
 
 		try {
-
+//slow the bird flaps
 			batch.draw(birds[flapState], (Gdx.graphics.getWidth() / 2f - birds[flapState].getWidth() / 2f),
 					   (Gdx.graphics.getHeight() / 2f - birds[flapState].getHeight() / 2f));
 			Thread.sleep(100);
@@ -74,6 +72,12 @@ public class FlappyBird extends ApplicationAdapter {
 			e.printStackTrace();
 		}
 
+
+		//respond to touch
+		if (Gdx.input.isTouched()) {
+
+			Gdx.app.log("Touched", "Bird Touched");
+		}
 
 		batch.end();
 
