@@ -13,6 +13,12 @@ public class FlappyBird extends ApplicationAdapter {
 	Texture []birds;
 	int flapState ;
 
+	//gravity variables
+
+	float gravity = 0.2f;
+	float velocity = 0;
+	int manY = 0;
+
 
 	//called when the app is run
 	@Override
@@ -47,7 +53,24 @@ public class FlappyBird extends ApplicationAdapter {
 		//draw background
 		batch.draw(background, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+		//flap the bird
+		flapTheBird();
 
+
+		//set the initial Y Position for the bird
+		int birdPositionY = Gdx.graphics.getWidth()/2;
+
+		//respond to touch
+		if (Gdx.input.isTouched()) {
+
+			Gdx.app.log("Touched", "Bird Touched");
+		}
+
+		batch.end();
+
+	}
+
+	private void flapTheBird() {
 		//flapState to switch between birds in birds array
 
 		if (flapState ==0) {
@@ -71,16 +94,6 @@ public class FlappyBird extends ApplicationAdapter {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-
-		//respond to touch
-		if (Gdx.input.isTouched()) {
-
-			Gdx.app.log("Touched", "Bird Touched");
-		}
-
-		batch.end();
-
 	}
 
 	@Override
