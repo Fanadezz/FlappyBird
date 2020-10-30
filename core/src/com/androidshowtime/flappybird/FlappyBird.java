@@ -11,7 +11,12 @@ public class FlappyBird extends ApplicationAdapter {
     //textures in games creations are just image resources
     Texture background;
     Texture[] birds;
-    int flapState;
+    Texture bottomTube;
+    Texture topTube;
+
+
+    //track flap state
+    int flapState =0;
 
     //gravity variables
 
@@ -23,6 +28,10 @@ public class FlappyBird extends ApplicationAdapter {
     //track game state
     int gameState = 0;
 
+    //Screen Dimensions
+    int height;
+    int width;
+
 
     //called when the app is run
     @Override
@@ -31,8 +40,13 @@ public class FlappyBird extends ApplicationAdapter {
         //sprite is a collection of textures
         batch = new SpriteBatch();
         background = new Texture("bg.png");
-        flapState = 0;
+        bottomTube = new Texture("bottomtube.png");
+       topTube = new Texture("toptube.png");
         birds = new Texture[]{new Texture("bird.png"), new Texture("bird2.png")};
+
+        //initialize screen dimensions
+        height = Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
 
         //set the initial Y Position for the bird at the first bird's height
         birdYPosition = Gdx.graphics.getHeight() / 2 - birds[0].getHeight()/2 - 2;
@@ -48,7 +62,7 @@ public class FlappyBird extends ApplicationAdapter {
 
         //SCREEN TOUCHED - GAME ACTIVE
         if (gameState != 0) {
-
+drawTubes();
             //respond to touch when screen is touched
             if (Gdx.input.isTouched()) {
 
@@ -165,6 +179,8 @@ public class FlappyBird extends ApplicationAdapter {
         //flap the bird
         flapBirdWings();
 
+
+
         batch.end();
     }
 
@@ -173,5 +189,21 @@ public class FlappyBird extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
 
+    }
+
+    private void drawTubes(){
+batch.begin();
+        int tubeWidth = topTube.getWidth();
+        int tubeHeight = topTube.getHeight()/2;
+        int screenCenterX = width/2;
+        int screenCenterY = height/2;
+
+//batch.draw(topTube, (wid333th - tubeWidth)/2f, (height - (tubeHeight*2))/3f  );
+//batch.draw(bottomTube,  (width - tubeWidth)/2f, (height - (tubeHeight + ((tubeHeight*2))/3f)) );
+//(height -(height +(2 *tubeHeight))/4f)
+batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + tubeWidth/2f), tubeWidth,
+           tubeHeight);
+batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),(float)tubeWidth, tubeWidth, tubeHeight);
+batch.end();
     }
 }
