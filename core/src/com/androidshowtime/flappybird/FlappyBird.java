@@ -39,12 +39,14 @@ public class FlappyBird extends ApplicationAdapter {
     float gap = 400f;
 
 
-    //offsets variable
+    //offsets variable for y-axis
     float maxTubeOffset;
     Random randomGenerator;
     float tubeOffset;
 
-
+//offsets variables for x-axis
+    float tubeVelocity = 4;
+    float tubeX;
 
     //called when the app is run
     @Override
@@ -63,6 +65,8 @@ public class FlappyBird extends ApplicationAdapter {
 
         //set the initial Y Position for the bird at the first bird's height
         birdYPosition = Gdx.graphics.getHeight() / 2 - birds[0].getHeight()/2 - 2;
+
+
 
 
         //initialize offsets
@@ -94,7 +98,14 @@ public class FlappyBird extends ApplicationAdapter {
 
                 /*r.nextFloat generates numbers between 0 and 1*/
                 tubeOffset = (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
+
+
+                //tubeX
+                tubeX = height/2f - topTube.getHeight()/2f;
             }
+
+            //decrease tubeX by 4
+            tubeX = tubeX-4;
 //draw tubes
             drawTubes();
 
@@ -228,8 +239,8 @@ batch.begin();
         int screenCenterY = height/2;
 
 //draw tubes while adding the tubeOffset to Y
-batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + gap/2) + tubeOffset);
-batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),height/2f - (gap/2) -(tubeHeight) +tubeOffset);
+batch.draw(topTube, tubeX,(screenCenterY + gap/2) + tubeOffset);
+batch.draw(bottomTube ,tubeX,height/2f - (gap/2) -(tubeHeight) +tubeOffset);
 batch.end();
     }
 }
