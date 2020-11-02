@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.Random;
+
 public class FlappyBird extends ApplicationAdapter {
     SpriteBatch batch;
 
@@ -37,6 +39,13 @@ public class FlappyBird extends ApplicationAdapter {
     float gap = 400f;
 
 
+    //offsets variable
+    float maxTubeOffset;
+    Random randomGenerator;
+    float tubeOffset;
+
+
+
     //called when the app is run
     @Override
     public void create() {
@@ -55,6 +64,11 @@ public class FlappyBird extends ApplicationAdapter {
         //set the initial Y Position for the bird at the first bird's height
         birdYPosition = Gdx.graphics.getHeight() / 2 - birds[0].getHeight()/2 - 2;
 
+
+        //initialize offsets
+        maxTubeOffset = height/2f - 100 - gap/2f;
+      randomGenerator = new Random();
+
     }
 
 
@@ -66,17 +80,23 @@ public class FlappyBird extends ApplicationAdapter {
 
         //SCREEN TOUCHED - GAME ACTIVE
         if (gameState != 0) {
-drawTubes();
+
             //respond to touch when screen is touched
             if (Gdx.input.isTouched()) {
 
 
-                velocity = -20;
+                velocity = -30;
 
                 //if the screen is touched switch gameState
                 gameState = 1;
 
+                //generate random float
+
+                /*r.nextFloat generates numbers between 0 and 1*/
+                tubeOffset = (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
             }
+//draw tubes
+            drawTubes();
 
             //perform gravity manoeuvres
             performGravityManoeuvres();
@@ -207,11 +227,9 @@ batch.begin();
         int screenCenterX = width/2;
         int screenCenterY = height/2;
 
-//batch.draw(topTube, (wid333th - tubeWidth)/2f, (height - (tubeHeight*2))/3f  );
-//batch.draw(bottomTube,  (width - tubeWidth)/2f, (height - (tubeHeight + ((tubeHeight*2))/3f)) );
-//(height -(height +(2 *tubeHeight))/4f)
-batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + gap/2));
-batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),height/2f - (gap/2) -(tubeHeight));
+//draw tubes while adding the tubeOffset to Y
+batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + gap/2) + tubeOffset);
+batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),height/2f - (gap/2) -(tubeHeight) +tubeOffset);
 batch.end();
     }
 }
