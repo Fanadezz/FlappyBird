@@ -33,6 +33,10 @@ public class FlappyBird extends ApplicationAdapter {
     int width;
 
 
+    //variable gap is alterable to increase game difficulty
+    float gap = 400f;
+
+
     //called when the app is run
     @Override
     public void create() {
@@ -57,7 +61,7 @@ public class FlappyBird extends ApplicationAdapter {
     //called continuously in the app
     @Override
     public void render() {
-        //perform initial game set Up (draw background and flap wings)
+        //perform initial game set Up (draw background)
         initialGameSetUp();
 
         //SCREEN TOUCHED - GAME ACTIVE
@@ -85,7 +89,7 @@ drawTubes();
             if (Gdx.input.isTouched()) {
 
 
-                velocity = -20;
+                velocity = -30;
 
                 //if the screen is touched switch gameState
                 gameState = 1;
@@ -95,7 +99,8 @@ drawTubes();
 
         }
 
-
+        //flap the bird
+        flapBirdWings();
 
 
     }
@@ -119,11 +124,17 @@ drawTubes();
 
 
         try {
-            //slow the bird flaps
+
+            batch.begin();
+            //draw bird
             batch.draw(birds[flapState],
                        (Gdx.graphics.getWidth() / 2f - birds[flapState].getWidth() / 2f),
                        (birdYPosition));
+            batch.end();
+            //slow the bird flaps
             Thread.sleep(100);
+
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -172,12 +183,10 @@ drawTubes();
          * Length - we get the length from Gdx.graphics Library*/
 
 
-        //draw background
+        //draw background-
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
-        //flap the bird
-        flapBirdWings();
 
 
 
@@ -194,16 +203,15 @@ drawTubes();
     private void drawTubes(){
 batch.begin();
         int tubeWidth = topTube.getWidth();
-        int tubeHeight = topTube.getHeight()/2;
+        int tubeHeight = topTube.getHeight();
         int screenCenterX = width/2;
         int screenCenterY = height/2;
 
 //batch.draw(topTube, (wid333th - tubeWidth)/2f, (height - (tubeHeight*2))/3f  );
 //batch.draw(bottomTube,  (width - tubeWidth)/2f, (height - (tubeHeight + ((tubeHeight*2))/3f)) );
 //(height -(height +(2 *tubeHeight))/4f)
-batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + tubeWidth/2f), tubeWidth,
-           tubeHeight);
-batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),(float)tubeWidth, tubeWidth, tubeHeight);
+batch.draw(topTube, screenCenterX -(tubeWidth/2f),(screenCenterY + gap/2));
+batch.draw(bottomTube ,screenCenterX - (tubeWidth/2f),height/2f - (gap/2) -(tubeHeight));
 batch.end();
     }
 }
