@@ -256,12 +256,18 @@ batch.begin();
 
         for (int i = 0; i < numberOfTubes; i++) {
             //check if the tube is at the edge of the screen
-            if (tubeX[i]) {
+            if (tubeX[i] < -topTube.getWidth()) {
+
+                //shift tube to the right
+                tubeX[i] += numberOfTubes * distanceBetweenTubes;
 
             }
 
-            //decrease tubeX by 4
-            tubeX[i] = tubeX[i]-tubeVelocity;
+            else {
+                //decrease tubeX by 4 and shift tubes to the left
+                tubeX[i] = tubeX[i]-tubeVelocity;
+            }
+
             //draw tubes while adding the tubeOffset to Y
             batch.draw(topTube, tubeX[i],(screenCenterY + gap/2) + tubeOffset[i]);
             batch.draw(bottomTube ,tubeX[i],height/2f - (gap/2) -(tubeHeight) +tubeOffset[i]);
