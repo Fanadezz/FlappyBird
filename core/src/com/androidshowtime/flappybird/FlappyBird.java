@@ -39,14 +39,20 @@ public class FlappyBird extends ApplicationAdapter {
     float gap = 400f;
 
 
-    //offsets variable for y-axis
-    float maxTubeOffset;
-    Random randomGenerator;
-    float tubeOffset;
+
 
 //offsets variables for x-axis
     float tubeVelocity = 4;
-    float tubeX;
+
+    int numberOfTubes = 4;
+
+    float[] tubeX = new float[numberOfTubes];
+    float distanceBetweenTubes;
+
+    //offsets variable for y-axis
+    float maxTubeOffset;
+    Random randomGenerator;
+    float []tubeOffset = new float[numberOfTubes];
 
     //called when the app is run
     @Override
@@ -73,6 +79,25 @@ public class FlappyBird extends ApplicationAdapter {
         maxTubeOffset = height/2f - 100 - gap/2f;
       randomGenerator = new Random();
 
+      //distance between tubes is s
+        distanceBetweenTubes = (float) width/2;
+
+
+        //create tubes
+        for (int i = 0; i < numberOfTubes; i++) {
+            /*r.nextFloat generates numbers between 0 and 1*/
+            tubeOffset [i]= (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
+
+
+            //tubeX
+            tubeX[i] = height/2f - topTube.getHeight()/2f + (i* distanceBetweenTubes);
+        }
+
+
+
+
+
+
     }
 
 
@@ -94,18 +119,9 @@ public class FlappyBird extends ApplicationAdapter {
                 //if the screen is touched switch gameState
                 gameState = 1;
 
-                //generate random float
-
-                /*r.nextFloat generates numbers between 0 and 1*/
-                tubeOffset = (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
-
-
-                //tubeX
-                tubeX = height/2f - topTube.getHeight()/2f;
             }
 
-            //decrease tubeX by 4
-            tubeX = tubeX-4;
+
 //draw tubes
             drawTubes();
 
@@ -233,14 +249,28 @@ public class FlappyBird extends ApplicationAdapter {
 
     private void drawTubes(){
 batch.begin();
-        int tubeWidth = topTube.getWidth();
+
         int tubeHeight = topTube.getHeight();
-        int screenCenterX = width/2;
+
         int screenCenterY = height/2;
 
-//draw tubes while adding the tubeOffset to Y
-batch.draw(topTube, tubeX,(screenCenterY + gap/2) + tubeOffset);
-batch.draw(bottomTube ,tubeX,height/2f - (gap/2) -(tubeHeight) +tubeOffset);
+        for (int i = 0; i < numberOfTubes; i++) {
+            //check if the tube is at the edge of the screen
+            if (tubeX[i]) {
+
+            }
+
+            //decrease tubeX by 4
+            tubeX[i] = tubeX[i]-tubeVelocity;
+            //draw tubes while adding the tubeOffset to Y
+            batch.draw(topTube, tubeX[i],(screenCenterY + gap/2) + tubeOffset[i]);
+            batch.draw(bottomTube ,tubeX[i],height/2f - (gap/2) -(tubeHeight) +tubeOffset[i]);
+
+
+
+        }
+
+
 batch.end();
     }
 }
