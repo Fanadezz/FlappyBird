@@ -79,14 +79,13 @@ public class FlappyBird extends ApplicationAdapter {
         maxTubeOffset = height/2f - 100 - gap/2f;
       randomGenerator = new Random();
 
-      //distance between tubes is s
-        distanceBetweenTubes = (float) width/2;
+      //distance between tubes (multiply by 0.75 to increase the space)
+        distanceBetweenTubes = (float)(width * 0.75);
 
 
         //create tubes
         for (int i = 0; i < numberOfTubes; i++) {
-            /*r.nextFloat generates numbers between 0 and 1*/
-            tubeOffset [i]= (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
+
 
 
             //tubeX
@@ -260,7 +259,8 @@ batch.begin();
 
                 //shift tube to the right
                 tubeX[i] += numberOfTubes * distanceBetweenTubes;
-
+                /*r.nextFloat generates numbers between 0 and 1*/
+                tubeOffset [i]= (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
             }
 
             else {
