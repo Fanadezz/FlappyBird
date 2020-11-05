@@ -2,12 +2,17 @@ package com.androidshowtime.flappybird;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 
 import java.util.Random;
 
 public class FlappyBird extends ApplicationAdapter {
+
+    //batch to enable us draw textures
     SpriteBatch batch;
 
     //textures in games creations are just image resources
@@ -16,9 +21,15 @@ public class FlappyBird extends ApplicationAdapter {
     Texture bottomTube;
     Texture topTube;
 
+    //circle shape to enclose the bird
+    Circle birdCircle;
+
+    /*shape renderer to enable us draw a shape and detect
+    collisions( as textures don't detect collisions*/
+    ShapeRenderer shapeRenderer;
 
     //track flap state
-    int flapState =0;
+    int flapState = 0;
 
     //gravity variables
 
@@ -39,9 +50,7 @@ public class FlappyBird extends ApplicationAdapter {
     float gap = 400f;
 
 
-
-
-//offsets variables for x-axis
+    //offsets variables for x-axis
     float tubeVelocity = 4;
 
     int numberOfTubes = 4;
@@ -52,7 +61,7 @@ public class FlappyBird extends ApplicationAdapter {
     //offsets variable for y-axis
     float maxTubeOffset;
     Random randomGenerator;
-    float []tubeOffset = new float[numberOfTubes];
+    float[] tubeOffset = new float[numberOfTubes];
 
     //called when the app is run
     @Override
@@ -62,7 +71,7 @@ public class FlappyBird extends ApplicationAdapter {
         batch = new SpriteBatch();
         background = new Texture("bg.png");
         bottomTube = new Texture("bottomtube.png");
-       topTube = new Texture("toptube.png");
+        topTube = new Texture("toptube.png");
         birds = new Texture[]{new Texture("bird.png"), new Texture("bird2.png")};
 
         //initialize screen dimensions
@@ -70,33 +79,29 @@ public class FlappyBird extends ApplicationAdapter {
         width = Gdx.graphics.getWidth();
 
         //set the initial Y Position for the bird at the first bird's height
-        birdYPosition = Gdx.graphics.getHeight() / 2 - birds[0].getHeight()/2 - 2;
-
-
+        birdYPosition = Gdx.graphics.getHeight() / 2 - birds[0].getHeight() / 2 - 2;
 
 
         //initialize offsets
-        maxTubeOffset = height/2f - 100 - gap/2f;
-      randomGenerator = new Random();
+        maxTubeOffset = height / 2f - 100 - gap / 2f;
+        randomGenerator = new Random();
 
-      //distance between tubes (multiply by 0.75 to increase the space)
-        distanceBetweenTubes = (float)(width * 0.75);
+        //distance between tubes (multiply by 0.75 to increase the space)
+        distanceBetweenTubes = (float) (width * 0.75);
 
 
         //create tubes
         for (int i = 0; i < numberOfTubes; i++) {
 
 
-
             //tubeX
-            tubeX[i] = height/2f - topTube.getHeight()/2f + (i* distanceBetweenTubes);
+            tubeX[i] = height / 2f - topTube.getHeight() / 2f + (i * distanceBetweenTubes);
         }
 
 
-
-
-
-
+        //initialize shapeRenderer and the circle
+        shapeRenderer = new ShapeRenderer();
+        birdCircle = new Circle();
     }
 
 
@@ -121,7 +126,7 @@ public class FlappyBird extends ApplicationAdapter {
             }
 
 
-//draw tubes
+            //draw tubes
             drawTubes();
 
             //perform gravity manoeuvres
@@ -151,6 +156,58 @@ public class FlappyBird extends ApplicationAdapter {
 
     }
 
+
+
+
+
+    private void performGravityManoeuvres() {
+
+
+        /*increase velocity of the bird each time the render-loop is called while
+         bringing down the bird by subtracting the velocity with each loop resulting
+         in bird falling faster and faster along the Y-Axis*/
+
+        //increasingly falling speed
+        velocity = velocity + gravity;
+
+
+        //subtracting the height will make bird shoot into the air
+        birdYPosition -= velocity;
+
+
+        if (birdYPosition <= 0) {
+
+            birdYPosition = 0;
+        }
+        //restrict bird from crossing the upper screen height
+        if (birdYPosition >= Gdx.graphics.getHeight() - birds[flapState].getHeight()) {
+            birdYPosition = Gdx.graphics.getHeight() - birds[flapState].getHeight();
+
+        }
+
+
+    }
+
+    //initialize game and perform initial setups
+    private void initialGameSetUp() {
+
+        //tells the render method we gonna start displaying sprites
+        batch.begin();
+
+        /*display we use batch.draw() - the draw method takes
+         * Texture - background
+         * X-Co-ordinate - 0
+         * Y-Co-Ordinate - 0
+         * Width - we get the width from Gdx.graphics Library to match screen size
+         * Length - we get the length from Gdx.graphics Library*/
+
+
+        //draw background-
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+
+        batch.end();
+    }
 
     //make the bird flap
 
@@ -184,56 +241,52 @@ public class FlappyBird extends ApplicationAdapter {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+        //specify shape type i.e. filled shape
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //set color
+        shapeRenderer.setColor(Color.RED);
+
+        //set the shape to be on the same position as the bird(x, y , radius)
+        birdCircle.set(width/2f, birdYPosition +(birds[flapState].getHeight()/2f),
+                       birds[flapState].getWidth());
+
+        //render the circle
+
+        shapeRenderer.circle(birdCircle.x, birdCircle.y,birdCircle.radius);
+        shapeRenderer.end();
     }
 
 
-    private void performGravityManoeuvres() {
 
-
-        /*increase velocity of the bird each time the render-loop is called while
-         bringing down the bird by subtracting the velocity with each loop resulting
-         in bird falling faster and faster along the Y-Axis*/
-
-        //increasingly falling speed
-        velocity = velocity + gravity;
-
-
-        //subtracting the height will make bird shoot into the air
-        birdYPosition -= velocity;
-
-
-        if (birdYPosition <= 0 ) {
-
-            birdYPosition = 0;
-        }
-       //restrict bird from crossing the upper screen height
-        if (birdYPosition >= Gdx.graphics.getHeight() -birds[flapState].getHeight()){
-            birdYPosition= Gdx.graphics.getHeight() -birds[flapState].getHeight();
-
-        }
-
-
-    }
-
-    //initialize game and perform initial setups
-    private void initialGameSetUp() {
-
-        //tells the render method we gonna start displaying sprites
+    private void drawTubes() {
         batch.begin();
 
-        /*display we use batch.draw() - the draw method takes
-         * Texture - background
-         * X-Co-ordinate - 0
-         * Y-Co-Ordinate - 0
-         * Width - we get the width from Gdx.graphics Library to match screen size
-         * Length - we get the length from Gdx.graphics Library*/
+        int tubeHeight = topTube.getHeight();
+
+        int screenCenterY = height / 2;
+
+        for (int i = 0; i < numberOfTubes; i++) {
+            //check if the tube is at the edge of the screen
+            if (tubeX[i] < -topTube.getWidth()) {
+
+                //shift tube to the right
+                tubeX[i] += numberOfTubes * distanceBetweenTubes;
+                /*r.nextFloat generates numbers between 0 and 1*/
+                tubeOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (height - (gap + 200));
+            } else {
+                //decrease tubeX by 4 and shift tubes to the left
+                tubeX[i] = tubeX[i] - tubeVelocity;
+            }
+
+            //draw tubes while adding the tubeOffset to Y
+            batch.draw(topTube, tubeX[i], (screenCenterY + gap / 2) + tubeOffset[i]);
+            batch.draw(bottomTube, tubeX[i],
+                       height / 2f - (gap / 2) - (tubeHeight) + tubeOffset[i]);
 
 
-        //draw background-
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-
-
+        }
 
 
         batch.end();
@@ -244,39 +297,5 @@ public class FlappyBird extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
 
-    }
-
-    private void drawTubes(){
-batch.begin();
-
-        int tubeHeight = topTube.getHeight();
-
-        int screenCenterY = height/2;
-
-        for (int i = 0; i < numberOfTubes; i++) {
-            //check if the tube is at the edge of the screen
-            if (tubeX[i] < -topTube.getWidth()) {
-
-                //shift tube to the right
-                tubeX[i] += numberOfTubes * distanceBetweenTubes;
-                /*r.nextFloat generates numbers between 0 and 1*/
-                tubeOffset [i]= (randomGenerator.nextFloat() -0.5f) * (height - (gap+200));
-            }
-
-            else {
-                //decrease tubeX by 4 and shift tubes to the left
-                tubeX[i] = tubeX[i]-tubeVelocity;
-            }
-
-            //draw tubes while adding the tubeOffset to Y
-            batch.draw(topTube, tubeX[i],(screenCenterY + gap/2) + tubeOffset[i]);
-            batch.draw(bottomTube ,tubeX[i],height/2f - (gap/2) -(tubeHeight) +tubeOffset[i]);
-
-
-
-        }
-
-
-batch.end();
     }
 }
