@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
@@ -21,12 +22,8 @@ public class FlappyBird extends ApplicationAdapter {
     Texture bottomTube;
     Texture topTube;
 
-    //circle shape to enclose the bird
-    Circle birdCircle;
 
-    /*shape renderer to enable us draw a shape and detect
-    collisions( as textures don't detect collisions*/
-    ShapeRenderer shapeRenderer;
+
 
     //track flap state
     int flapState = 0;
@@ -63,6 +60,14 @@ public class FlappyBird extends ApplicationAdapter {
     Random randomGenerator;
     float[] tubeOffset = new float[numberOfTubes];
 
+    /*shape renderer to enable us draw a shape and detect
+    collisions( as textures don't detect collisions*/
+    ShapeRenderer shapeRenderer;
+    //circle shape to enclose the bird
+    Circle birdCircle;
+    Rectangle [] topPipeRectangles;
+    Rectangle []bottomPipeRectangles;
+
     //called when the app is run
     @Override
     public void create() {
@@ -89,19 +94,24 @@ public class FlappyBird extends ApplicationAdapter {
         //distance between tubes (multiply by 0.75 to increase the space)
         distanceBetweenTubes = (float) (width * 0.75);
 
-
+        //initialize shapeRenderer,circle & pipe-rectangles
+        shapeRenderer = new ShapeRenderer();
+        birdCircle = new Circle();
+        topPipeRectangles = new Rectangle[numberOfTubes];
+        bottomPipeRectangles = new Rectangle[numberOfTubes];
         //create tubes
         for (int i = 0; i < numberOfTubes; i++) {
 
 
             //tubeX
             tubeX[i] = height / 2f - topTube.getHeight() / 2f + (i * distanceBetweenTubes);
+
+            topPipeRectangles[i] = new Rectangle();
+            bottomPipeRectangles[i] = new Rectangle();
         }
 
 
-        //initialize shapeRenderer and the circle
-        shapeRenderer = new ShapeRenderer();
-        birdCircle = new Circle();
+
     }
 
 
@@ -285,6 +295,25 @@ public class FlappyBird extends ApplicationAdapter {
             batch.draw(bottomTube, tubeX[i],
                        height / 2f - (gap / 2) - (tubeHeight) + tubeOffset[i]);
 
+
+
+            //specify shape type i.e. filled shape
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            //set color
+            shapeRenderer.setColor(Color.RED);
+
+            //set the shape to be on the same position as the pipe(x, y , width, height)
+
+
+
+            shapeRenderer.rect(tubeX[i], (screenCenterY + gap / 2) + tubeOffset[i],
+                               topTube.getWidth(), topTube.getHeight());
+            shapeRenderer.setColor(Color.GREEN);
+            shapeRenderer.rect(tubeX[i], height / 2f - (gap / 2) - (tubeHeight) + tubeOffset[i],
+                                  bottomTube.getWidth(), bottomTube.getHeight());
+
+
+            shapeRenderer.end();
 
         }
 
